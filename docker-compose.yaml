@@ -25,8 +25,7 @@ services:
       - --import-realm
     volumes:
       - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
-    ports:
-      - "8080:8080"
+    network_mode: "service:localhost"
     depends_on:
       - keycloak_db
   frontend:
@@ -43,7 +42,12 @@ services:
   api:
     build:
       context: ./API/bionic-api
-    ports:
-      - "8000:8000"
+    network_mode: "service:localhost"
     depends_on:
       - keycloak
+  localhost:
+    image: alpine:latest
+    command: sleep infinity
+    ports:
+      - "8080:8080" # Keycloak port
+      - "8000:8000" # oauth-sample port
